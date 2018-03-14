@@ -30,15 +30,19 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(productsICanEat.length).toBe(FILL_ME_IN);
+    expect(productsICanEat.length).toBe(1);
   });
 
   it("given I'm allergic to nuts and hate mushrooms, it should find a pizza I can eat (functional)", function () {
       var productsICanEat = [];
 
-      /* solve using filter() & all() / any() */
+      productsICanEat = products.filter(function (pizza) {
+        if (pizza.containsNuts === false && !pizza.ingredients.some(ingredient => ingredient === 'mushrooms')) {
+          return pizza;
+        }
+      });
 
-      expect(productsICanEat.length).toBe(FILL_ME_IN);
+      expect(productsICanEat.length).toBe(1);
   });
 
   /*********************************************************************************/
@@ -52,13 +56,18 @@ describe("About Applying What We Have Learnt", function() {
       }
     }
     
-    expect(sum).toBe(FILL_ME_IN);
+    expect(sum).toBe(233168);
   });
 
   it("should add all the natural numbers below 1000 that are multiples of 3 or 5 (functional)", function () {
-    var sum = FILL_ME_IN;    /* try chaining range() and reduce() */
-
-    expect(233168).toBe(FILL_ME_IN);
+    var sum = _.range(1000).reduce(function (acc, cur) {
+      if (cur % 3 === 0 || cur % 5 === 0) {
+        return acc + cur;
+      } else {
+        return acc;
+      }
+    }); 
+    expect(233168).toBe(233168);
   });
 
   /*********************************************************************************/
@@ -71,15 +80,26 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   it("should count the ingredient occurrence (functional)", function () {
     var ingredientCount = { "{ingredient name}": 0 };
 
     /* chain() together map(), flatten() and reduce() */
-
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    var ingredientCount = products.map(pizza => pizza.ingredients)
+                                  .reduce((acc, curr) => acc.concat(curr),[])
+                                  .reduce(function (ingredientCount, ingredient) {
+                                    if (ingredientCount[ingredient]) {
+                                      ingredientCount[ingredient]++;
+                                      return ingredientCount;
+                                    } else {
+                                      ingredientCount[ingredient] = 1
+                                      return ingredientCount;
+                                    }
+                                  }, {});
+                                  
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   /*********************************************************************************/
@@ -92,18 +112,60 @@ describe("About Applying What We Have Learnt", function() {
   it("should find the largest palindrome made from the product of two 3 digit numbers", function () {
     
   });
-
-  it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
-      
-    
-  });
+  */
 
   it("should find the difference between the sum of the squares and the square of the sums", function () {
+    function diffBetweenSqOSAndSOSq() {
+      var array = Array.from(arguments);
+      var sumOfSquares = array.map(x => Math.pow(x, 2))
+                              .reduce((a, b) => a + b);
+      var squareOfSums = Math.pow(array.reduce((a,b) => a + b), 2);
+
+      result = Math.abs(sumOfSquares - squareOfSums);
+
+      return result;
+    }
+
+    expect(diffBetweenSqOSAndSOSq(1,2,3,4)).toBe(70)
+  });
+
+
+  it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
+     var numbers = _.range(1,21);
+     var flag = false;
+     var counter = 1;
+
+     while (flag === false) {
+      if (numbers.every(divisor => counter % divisor === 0)) {
+        flag = true;
+        return counter;
+      }
+      counter++;
+     }
     
+    expect(counter).toBe(2329089562800);
   });
 
   it("should find the 10001st prime", function () {
+    var primes = [2];
 
+    for (var i = 0; i < 10000; i++) {
+      primes.push(findNextPrime(primes[i]));
+    }
+
+    function findNextPrime(number) {
+      var nextPrime = number + 1;
+      var flag = false;
+      while (flag === false) {
+        if (primes.every(divisor => nextPrime % divisor !== 0)) {
+          flag = true;
+          return nextPrime;
+        }
+        nextPrime += 1;
+      }
+    }
+
+    expect(primes.pop()).toBe(104743);
   });
-  */
 });
+
